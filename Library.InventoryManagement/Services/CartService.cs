@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.InventoryManagement.Models;
-
+using Newtonsoft.Json;
 
 namespace Library.InventoryManagement.Services
 {
@@ -32,13 +33,19 @@ namespace Library.InventoryManagement.Services
 
         public void Delete(int index, int amount)
         {
-            if (amount >= cartContents[index].Quantity)
-            {
-                cartContents.RemoveAt(index);
-            } else
-            {
-                cartContents[index].Quantity -= amount;
-            }
+            cartContents.RemoveAt(index);
+        }
+
+        public void Save(string fileName)
+        {
+            var todosJson = JsonConvert.SerializeObject(cartContents);
+            File.WriteAllText(fileName, todosJson);
+        }
+
+        public void Load(string fileName)
+        {
+            var todosJson = File.ReadAllText(fileName);
+            cartContents = JsonConvert.DeserializeObject<List<Product>>(todosJson) ?? new List<Product>();
         }
     }
 }

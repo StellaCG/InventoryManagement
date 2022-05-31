@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Library.InventoryManagement.Models;
 using Library.InventoryManagement.Services;
 
@@ -12,6 +13,13 @@ namespace InventoryManagement
             // generate an inventory and a cart
             var inventoryService = new InventoryService();
             var cartService = new CartService();
+            if (File.Exists("InventoryData.json")) {
+                inventoryService.Load("InventoryData.json");
+            }
+            if (File.Exists("CartData.json"))
+            {
+                cartService.Load("CartData.json");
+            }
             // menu
             PrintMenu();
             var input = Console.ReadLine();
@@ -78,6 +86,22 @@ namespace InventoryManagement
                         var ind = int.Parse(Console.ReadLine() ?? "0");
                         Console.WriteLine("How many would you like to remove?");
                         var num = int.Parse(Console.ReadLine() ?? "0");
+                        while (num > cartService.Cart[ind].Quantity || num < 0)
+                        {
+                            Console.WriteLine("Please enter a valid quantity");
+                            num = int.Parse(Console.ReadLine() ?? "0");
+                        }
+                        // inventoryService.Inventory[inventoryService.Inventory.IndexOf(
+                            // inventoryService.Inventory.Find(
+                                // e => e.Name == cartService.Cart[ind].Name))].Quantity += num;
+                        foreach (Product p in inventoryService.Inventory)
+                        {
+                            if (p.Name == cartService.Cart[ind].Name)
+                            {
+                                p.Quantity += num;
+                                break;
+                            }
+                        }
                         cartService.Delete(ind, num);
                     } else if (result == 8)
                     {
@@ -93,7 +117,8 @@ namespace InventoryManagement
                             total += (p.Quantity * p.Price);
                         }
                         double tax = 0.07 * total;
-                        Console.WriteLine($"Your total is {total + tax}.");
+                        Console.WriteLine(String.Format("Your total is {0:0.00}.", total+tax));
+                        File.Delete("CartData.json");
                         Console.WriteLine("Thank you for shopping!");
                         Environment.Exit(0);
                     } else if (result == 9)
@@ -110,6 +135,11 @@ namespace InventoryManagement
                             }
                         }
                     } else if (result == 10)
+                    {
+                        Console.WriteLine("You chose to save the inventory and cart.");
+                        inventoryService.Save("InventoryData.json");
+                        cartService.Save("CartData.json");
+                    } else if (result == 11)
                     {
                         break;
                     }
@@ -143,7 +173,8 @@ namespace InventoryManagement
             Console.WriteLine("7. Remove Item from Cart");
             Console.WriteLine("8. Checkout");
             Console.WriteLine("9. Search for an Item");
-            Console.WriteLine("10. Exit");
+            Console.WriteLine("10. Save Inventory or Cart.");
+            Console.WriteLine("11. Exit");
         }
     }
 }
