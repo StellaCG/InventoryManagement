@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Library.InventoryManagement.Models;
 using Library.InventoryManagement.Services;
+using Library.InventoryManagement.Utility;
 
 namespace InventoryManagement
 {
@@ -11,8 +12,8 @@ namespace InventoryManagement
         static void Main(string[] args)
         {
             // generate an inventory and a cart
-            var inventoryService = new InventoryService();
-            var cartService = new CartService();
+            var inventoryService = InventoryService.Current;
+            var cartService = CartService.Current;
             if (File.Exists("InventoryData.json")) {
                 inventoryService.Load("InventoryData.json");
             }
@@ -31,15 +32,31 @@ namespace InventoryManagement
                     if (result == 1)
                     {
                         Console.WriteLine("You chose to view inventory.");
-                        for (int i = 0; i < inventoryService.Inventory.Count; i++)
+                        Console.WriteLine("Would you like to sort the results by:\n1. Name\n2. Unit price");
+                        int sort = int.Parse(Console.ReadLine() ?? "0");
+                        if (sort < 1 || sort > 2)
                         {
-                            Console.WriteLine($"{i}. {inventoryService.Inventory[i].ToString()}");
+                            Console.WriteLine("Error: invalid selection");
+                            continue;
                         }
+                        List<Product> sortedResults = inventoryService.SortResults(sort);
+                        ViewPages(sortedResults);
+                        /*for (int i = 0; i < inventoryService.Inventory.Count; i++)
+                        {
+                            // Console.WriteLine(inventoryService.Inventory[i].GetType());
+                            // Console.WriteLine(inventoryService.Inventory[i].Weight);
+                            Console.WriteLine($"{i}. {sortedResults[i].ToString()}");
+                        }*/
                     } else if (result == 2)
                     {
                         Console.WriteLine("You chose to edit existing inventory.");
                         Console.WriteLine("Which entry would you like to edit?");
                         var ind = int.Parse(Console.ReadLine() ?? "0");
+                        if (ind < 0 || ind > inventoryService.Inventory.Count - 1)
+                        {
+                            Console.WriteLine("Error: invalid selection");
+                            continue;
+                        }
                         var selection = inventoryService.Inventory[ind];
                         FillInventory(selection);
                         inventoryService.Update(selection);
@@ -47,7 +64,21 @@ namespace InventoryManagement
                     } else if (result == 3)
                     {
                         Console.WriteLine("You chose to add new inventory.");
-                        var newProduct = new Product();
+                        Console.WriteLine("Will this inventory be measured by (W)eight or (Q)uantity?");
+                        string iType = Console.ReadLine();
+                        if (iType != "W" && iType != "Q")
+                        {
+                            Console.WriteLine("Error: invalid selection");
+                            continue;
+                        }
+                        Product? newProduct = null;
+                        if (iType == "W")
+                        {
+                            newProduct = new ProductByWeight();
+                        } else
+                        {
+                            newProduct = new ProductByQuantity();
+                        }
                         FillInventory(newProduct);
                         inventoryService.Create(newProduct);
 
@@ -56,28 +87,69 @@ namespace InventoryManagement
                         Console.WriteLine("You chose to remove inventory");
                         Console.WriteLine("Which product would you like to delete?");
                         var ind = int.Parse(Console.ReadLine() ?? "0");
+                        if (ind < 0 || ind > inventoryService.Inventory.Count-1)
+                        {
+                            Console.WriteLine("Error: invalid selection");
+                            return;
+                        }
                         inventoryService.Delete(ind);
 
                     } else if (result == 5)
                     {
                         Console.WriteLine("You chose to view the contents of the cart.");
-                        for (int i = 0; i < cartService.Cart.Count; i++)
+                        if (cartService.Cart.Count == 0)
                         {
-                            Console.WriteLine($"{i}. {cartService.Cart[i].ToString()}");
+                            Console.WriteLine("The cart is empty.");
+                        } else
+                        {
+                            Console.WriteLine("Would you like to sort by:\n1. Name\n2. Total Price");
+                            int sort = int.Parse(Console.ReadLine() ?? "0");
+                            if (sort > 0 && sort < 3)
+                            {
+                                List<Product> sortedResults = cartService.SortResults(sort);
+                                ViewPages(sortedResults);
+                            } else Console.WriteLine("Error: invalid selection");
                         }
 
                     } else if (result == 6)
                     {
+                        int num = 0;
+                        double w = 0;
                         Console.WriteLine("You chose to add an item to the cart.");
                         Console.WriteLine("Which item would you like to add to the cart?");
                         var ind = int.Parse(Console.ReadLine() ?? "0");
-                        Console.WriteLine("How many of this item do you want?");
-                        int num = int.Parse(Console.ReadLine() ?? "0");
+                        if (ind < 0 || ind > inventoryService.Inventory.Count-1)
+                        {
+                            Console.WriteLine("Error: invalid selection");
+                            continue;
+                        }
+                        Product? selectionCopy = null;
                         var selection = inventoryService.Inventory[ind];
-                        Product selectionCopy = new Product(selection);
-                        selectionCopy.Quantity = num;
+                        if (selection is ProductByWeight)
+                        {
+                            Console.WriteLine("How much of this item do you want?");
+                            w = double.Parse(Console.ReadLine() ?? "0");
+                            selectionCopy = new ProductByWeight(selection as ProductByWeight);
+                            var sc = selectionCopy as ProductByWeight;
+                            sc.Weight = w;
+                        } else
+                        {
+                            Console.WriteLine("How many of this item do you want?");
+                            num = int.Parse(Console.ReadLine() ?? "0");
+                            selectionCopy = new Product(selection);
+                        }
+                        
+                        if (selectionCopy is ProductByWeight)
+                        {
+                            var sbw = selection as ProductByWeight;
+                            selectionCopy.Weight = w;
+                            sbw.Weight -= w;
+                        } else
+                        {
+                            selectionCopy.Quantity = num;
+                            selection.Quantity -= num;
+                        }
                         cartService.Cart.Add(selectionCopy);
-                        selection.Quantity -= num;
 
                     } else if (result == 7)
                     {
@@ -111,13 +183,12 @@ namespace InventoryManagement
                         {
                             Console.WriteLine($"{i}. {cartService.Cart[i].ToString()}");
                         }
-                        double total = 0;
-                        foreach (Product p in cartService.Cart)
+                        double total = cartService.CalculatePrice();
+                        /*foreach (Product p in cartService.Cart)
                         {
                             total += (p.Quantity * p.Price);
-                        }
-                        double tax = 0.07 * total;
-                        Console.WriteLine(String.Format("Your total is {0:0.00}.", total+tax));
+                        */
+                        Console.WriteLine(String.Format("Your total is {0:0.00}.", total));
                         File.Delete("CartData.json");
                         Console.WriteLine("Thank you for shopping!");
                         Environment.Exit(0);
@@ -149,14 +220,64 @@ namespace InventoryManagement
             Console.WriteLine("Thank you for shopping!");
         }
 
-        public static void FillInventory(Product product)
+        public static void ViewPages(List<Product> list)
         {
+            var nav = new ListNavigator<Product>(list);
+            while (true)
+            {
+                foreach (var d in nav.GetCurrentPage())
+                {
+                    Console.WriteLine(d.Value);
+                }
+                if (nav.HasNextPage && nav.HasPreviousPage)
+                {
+                    Console.WriteLine("Would you like to go to the [N]ext page, [P]revious page, or the [M]enu?");
+                    string inp = Console.ReadLine();
+                    if (inp == "N") nav.GoForward();
+                    else if (inp == "P") nav.GoBackward();
+                    else if (inp == "M") break;
+                    else Console.WriteLine("Invalid input");
+                }
+                else if (nav.HasNextPage)
+                {
+                    Console.WriteLine("Would you like to go to the [N]ext page or the [M]enu?");
+                    string inp = Console.ReadLine();
+                    if (inp == "N") nav.GoForward();
+                    else if (inp == "M") break;
+                    else Console.WriteLine("Invalid input");
+                }
+                else if (nav.HasPreviousPage)
+                {
+                    Console.WriteLine("Would you like to go to the [P]revious page or the [M]enu?");
+                    string inp = Console.ReadLine();
+                    if (inp == "P") nav.GoBackward();
+                    else if (inp == "M") break;
+                    else Console.WriteLine("Invalid input.");
+                }
+                else break;
+            }
+        }
+        public static void FillInventory(Product? product)
+        {
+            if (product == null)
+            {
+                return;
+            }
             Console.WriteLine("What is the name of the product?");
             product.Name = Console.ReadLine() ?? string.Empty;
             Console.WriteLine("What is the description of the product?");
             product.Description = Console.ReadLine() ?? string.Empty;
-            Console.WriteLine("What is the quantity of the product?");
-            product.Quantity = int.Parse(Console.ReadLine() ?? "0");
+            if (product is ProductByWeight)
+            {
+                var pbw = product as ProductByWeight;
+                Console.WriteLine("What is the weight of the product?");
+                pbw.Weight = double.Parse(Console.ReadLine() ?? "0");
+            }
+            else
+            {
+                Console.WriteLine("What is the quantity of the product?");
+                product.Quantity = int.Parse(Console.ReadLine() ?? "0");
+            }
             Console.WriteLine("What is the price of the product?");
             product.Price = double.Parse(Console.ReadLine() ?? "0");
         }

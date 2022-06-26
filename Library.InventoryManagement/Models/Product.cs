@@ -2,6 +2,7 @@
 
 namespace Library.InventoryManagement.Models
 {
+    
     public class Product
     {
         public string Name { get; set; }
@@ -9,6 +10,8 @@ namespace Library.InventoryManagement.Models
         public double Price { get; set; }
         public int Quantity { get; set; }
         public double TotalPrice { get; set; }
+        public double Weight { get; set; }
+        public bool Bogo { get; set; }
 
         public Product Parent;
 
