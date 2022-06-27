@@ -212,13 +212,16 @@ namespace InventoryManagement
                         Console.WriteLine("Enter your search term:");
                         string search = Console.ReadLine() ?? string.Empty;
                         Console.WriteLine("Search results:");
+                        List<Product> searchResults = new List<Product>();
                         foreach (Product p in inventoryService.Inventory)
                         {
                             if (p.Name.Contains(search.ToLower()) || p.Description.Contains(search.ToLower()))
                             {
-                                Console.WriteLine($"{inventoryService.Inventory.IndexOf(p)}. {p.Name}: {p.Description}");
+                                searchResults.Add(p);
+                                // Console.WriteLine($"{inventoryService.Inventory.IndexOf(p)}. {p.Name}: {p.Description}");
                             }
                         }
+                        ViewPages(searchResults);
                     } else if (result == 10)
                     {
                         Console.WriteLine("You chose to save the inventory and cart.");
