@@ -22,7 +22,7 @@ namespace Library.InventoryManagement.Models
 
         public override string ToString()
         {
-            return $"{Name} : {Description}. ${Price}, {Weight} units of weight.";
+            return $"{Id} | {Name} : {Description}. ${Price}, {Weight} units of weight.";
         }
     }
 }

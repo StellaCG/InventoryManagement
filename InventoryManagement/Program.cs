@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Library.InventoryManagement.Models;
 using Library.InventoryManagement.Services;
 using Library.InventoryManagement.Utility;
@@ -32,6 +33,11 @@ namespace InventoryManagement
                     if (result == 1)
                     {
                         Console.WriteLine("You chose to view inventory.");
+                        if (inventoryService.Inventory.Count == 0)
+                        {
+                            Console.WriteLine("The inventory is empty.");
+                            break;
+                        } 
                         Console.WriteLine("Would you like to sort the results by:\n1. Name\n2. Unit price");
                         int sort = int.Parse(Console.ReadLine() ?? "0");
                         if (sort < 1 || sort > 2)
@@ -87,7 +93,7 @@ namespace InventoryManagement
                         Console.WriteLine("You chose to remove inventory");
                         Console.WriteLine("Which product would you like to delete?");
                         var ind = int.Parse(Console.ReadLine() ?? "0");
-                        if (ind < 0 || ind > inventoryService.Inventory.Count-1)
+                        if (!inventoryService.Inventory.Any(p => p.Id == ind))
                         {
                             Console.WriteLine("Error: invalid selection");
                             return;
@@ -118,13 +124,13 @@ namespace InventoryManagement
                         Console.WriteLine("You chose to add an item to the cart.");
                         Console.WriteLine("Which item would you like to add to the cart?");
                         var ind = int.Parse(Console.ReadLine() ?? "0");
-                        if (ind < 0 || ind > inventoryService.Inventory.Count-1)
+                        if (!inventoryService.Inventory.Any(p => p.Id == ind))
                         {
                             Console.WriteLine("Error: invalid selection");
                             continue;
                         }
                         Product? selectionCopy = null;
-                        var selection = inventoryService.Inventory[ind];
+                        var selection = inventoryService.Inventory.Find(p => p.Id == ind);
                         if (selection is ProductByWeight)
                         {
                             Console.WriteLine("How much of this item do you want?");
@@ -138,16 +144,26 @@ namespace InventoryManagement
                             num = int.Parse(Console.ReadLine() ?? "0");
                             selectionCopy = new Product(selection);
                         }
-                        
+
                         if (selectionCopy is ProductByWeight)
                         {
                             var sbw = selection as ProductByWeight;
                             selectionCopy.Weight = w;
-                            sbw.Weight -= w;
+                            if (sbw.Weight >= w) sbw.Weight -= w;
+                            else
+                            {
+                                Console.WriteLine("Not enough in stock.");
+                                continue;
+                            }
                         } else
                         {
                             selectionCopy.Quantity = num;
-                            selection.Quantity -= num;
+                            if (selection.Quantity >= num) selection.Quantity -= num;
+                            else
+                            {
+                                Console.WriteLine("Not enough in stock");
+                                continue;
+                            }
                         }
                         cartService.Cart.Add(selectionCopy);
 
@@ -163,9 +179,6 @@ namespace InventoryManagement
                             Console.WriteLine("Please enter a valid quantity");
                             num = int.Parse(Console.ReadLine() ?? "0");
                         }
-                        // inventoryService.Inventory[inventoryService.Inventory.IndexOf(
-                            // inventoryService.Inventory.Find(
-                                // e => e.Name == cartService.Cart[ind].Name))].Quantity += num;
                         foreach (Product p in inventoryService.Inventory)
                         {
                             if (p.Name == cartService.Cart[ind].Name)
@@ -184,11 +197,12 @@ namespace InventoryManagement
                             Console.WriteLine($"{i}. {cartService.Cart[i].ToString()}");
                         }
                         double total = cartService.CalculatePrice();
-                        /*foreach (Product p in cartService.Cart)
-                        {
-                            total += (p.Quantity * p.Price);
-                        */
                         Console.WriteLine(String.Format("Your total is {0:0.00}.", total));
+                        Console.WriteLine("Please enter your payment username:");
+                        _ = Console.ReadLine();
+                        Console.WriteLine("Please enter your payment password:");
+                        _ = Console.ReadLine();
+                        Console.WriteLine("Payment successful.");
                         File.Delete("CartData.json");
                         Console.WriteLine("Thank you for shopping!");
                         Environment.Exit(0);
@@ -277,6 +291,16 @@ namespace InventoryManagement
             {
                 Console.WriteLine("What is the quantity of the product?");
                 product.Quantity = int.Parse(Console.ReadLine() ?? "0");
+                Console.WriteLine("Is this product BOGO? (Y/N)");
+                string sale = Console.ReadLine() ?? null;
+                while (sale != "Y" && sale != "N" && sale != null)
+                {
+                    Console.WriteLine("Invalid input.");
+                    Console.WriteLine("Is this product BOGO? (Y/N)");
+                    sale = Console.ReadLine() ?? null;
+                }
+                if (sale == "Y") product.Bogo = true;
+                else if (sale == "N" || sale == null) product.Bogo = false;
             }
             Console.WriteLine("What is the price of the product?");
             product.Price = double.Parse(Console.ReadLine() ?? "0");

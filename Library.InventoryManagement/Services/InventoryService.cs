@@ -22,13 +22,23 @@ namespace Library.InventoryManagement.Services
             }
         }
 
+        public int NextId
+        {
+            get
+            {
+                if (!Inventory.Any()) return 0;
+                return Inventory.Select(i => i.Id).Max()+1;
+            }
+        }
+
         public InventoryService()
         {
             inventoryList = new List<Product>();
         }
 
         public void Create(Product product)
-        {
+        {   
+            product.Id = NextId;
             Inventory.Add(product);
         }
 
@@ -43,7 +53,7 @@ namespace Library.InventoryManagement.Services
 
         public void Delete(int index)
         {
-            inventoryList.RemoveAt(index);
+            inventoryList.RemoveAt(inventoryList.FindIndex(p => p.Id == index));
         }
 
         public static InventoryService Current

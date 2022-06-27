@@ -99,13 +99,17 @@ namespace Library.InventoryManagement.Services
             double checkoutPrice = 0;
             foreach (Product p in cartContents)
             {
-                Console.WriteLine(p.GetType());
+                // Console.WriteLine(p.GetType());
                 if (p.GetType() == typeof(ProductByWeight))
                 {
                     checkoutPrice += (p.Weight * p.Price);
                 } else
                 {
-                    checkoutPrice += (p.Quantity * p.Price);
+                    if (p.Bogo)
+                    {
+                        checkoutPrice += (((p.Quantity / 2) + (p.Quantity % 2)) * p.Price);
+                    }
+                    else checkoutPrice += (p.Quantity * p.Price);
                 }
             }
             return checkoutPrice * 1.07;
