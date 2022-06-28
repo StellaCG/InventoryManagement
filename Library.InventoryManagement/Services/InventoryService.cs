@@ -27,7 +27,16 @@ namespace Library.InventoryManagement.Services
             get
             {
                 if (!Inventory.Any()) return 0;
-                return Inventory.Select(i => i.Id).Max()+1;
+                return Inventory.Select(i => i.Id).Max() + 1;
+            }
+        }
+
+        public void AddOrUpdate(Product product)
+        {
+            if (product.Id <= 0)
+            {
+                product.Id = NextId;
+                Inventory.Add(product);
             }
         }
 
@@ -37,7 +46,7 @@ namespace Library.InventoryManagement.Services
         }
 
         public void Create(Product product)
-        {   
+        {
             product.Id = NextId;
             Inventory.Add(product);
         }

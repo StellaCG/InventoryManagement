@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Library.InventoryManagement.Models
+namespace InventoryManagementApplication.UWP.ViewModels
 {
-
-    public class Product
+    class ProductViewModel : INotifyPropertyChanged
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,23 +19,11 @@ namespace Library.InventoryManagement.Models
         public double Weight { get; set; }
         public bool Bogo { get; set; }
 
-        public Product Parent;
-
-        public Product()
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public Product(Product product)
-        {
-            Id = product.Id;
-            Name = product.Name;
-            Description = product.Description;
-            Price = product.Price;
-            Quantity = product.Quantity;
-            Bogo = product.Bogo;
-        }
-
         public override string ToString()
         {
             if (Bogo) return $"{Id} | {Name} : {Description}. ${Price}, {Quantity} units. BOGO";

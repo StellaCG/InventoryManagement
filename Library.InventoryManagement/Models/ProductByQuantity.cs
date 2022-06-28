@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace Library.InventoryManagement.Models
 {
-    public class ProductByQuantity : Product
+    class ProductByQuantity
     {
-
-
-
     }
 }
