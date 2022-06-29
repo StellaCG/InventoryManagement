@@ -12,6 +12,7 @@ namespace Library.InventoryManagement.Models
         public int Quantity { get; set; }
         public double TotalPrice { get; set; }
         public double Weight { get; set; }
+        public int Type { get; set; }
         public bool Bogo { get; set; }
 
         public Product Parent;
@@ -28,6 +29,7 @@ namespace Library.InventoryManagement.Models
             Description = product.Description;
             Price = product.Price;
             Quantity = product.Quantity;
+            Type = product.Type;
             Bogo = product.Bogo;
         }
 

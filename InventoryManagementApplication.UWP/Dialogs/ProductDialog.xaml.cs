@@ -36,11 +36,16 @@ namespace InventoryManagementApplication.UWP.Dialogs
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            var viewModel = DataContext as ProductViewModel;
-
+            // var viewModel = DataContext as ProductViewModel;
+            if ((DataContext as Product).Type == 0) InventoryService.Current.AddOrUpdate(DataContext as Product);
+            else
+            {
+                var pbw = new ProductByWeight(DataContext as Product);
+                InventoryService.Current.AddOrUpdate(pbw);
+            }
             // TODO: use a conversion constructor from view model -> todo
 
-            InventoryService.Current.AddOrUpdate(DataContext as Product);
+            // InventoryService.Current.AddOrUpdate(DataContext as Product);
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

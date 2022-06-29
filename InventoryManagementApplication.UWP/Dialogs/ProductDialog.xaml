@@ -7,8 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Title="Product Information"
-    PrimaryButtonText="Button1"
-    SecondaryButtonText="Button2"
+    PrimaryButtonText="Submit"
+    SecondaryButtonText="Cancel"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
@@ -50,11 +50,13 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ComboBox FontSize="10" PlaceholderText="Quantity" SelectedValue="{Binding Path=Type, Mode=TwoWay}">
-                <x:String>Weight</x:String>
+            <ComboBox Grid.Column="0" FontSize="10" PlaceholderText="Quantity" SelectedIndex="{Binding Path=Type, Mode=TwoWay}">
                 <x:String>Quantity</x:String>
-                
+                <x:String>Weight</x:String>
             </ComboBox>
+            <controls:NumberBox Grid.Column="1" PlaceholderText="0" SmallChange="1"
+                                SpinButtonPlacementMode="Inline" Value="{Binding Path=Quantity, Mode=TwoWay}"
+                                ValidationMode="InvalidInputOverwritten"/>
         </Grid>
     </Grid>
 </ContentDialog>

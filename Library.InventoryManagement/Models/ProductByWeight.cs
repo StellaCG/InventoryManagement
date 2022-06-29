@@ -14,10 +14,21 @@ namespace Library.InventoryManagement.Models
         public ProductByWeight(ProductByWeight product)
         {
             Name = product.Name;
+            Id = product.Id;
             Description = product.Description;
             Price = product.Price;
             Quantity = product.Quantity;
             Weight = product.Weight;
+        }
+
+        public ProductByWeight(Product product)
+        {
+            Name = product.Name;
+            Id = product.Id;
+            Description = product.Description;
+            Price = product.Price;
+            Quantity = 0;
+            Weight = product.Quantity;
         }
 
         public override string ToString()

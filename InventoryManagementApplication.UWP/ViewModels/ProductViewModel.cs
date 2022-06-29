@@ -17,6 +17,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
         public int Quantity { get; set; }
         public double TotalPrice { get; set; }
         public double Weight { get; set; }
+        public int Type { get; set; }
         public bool Bogo { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
