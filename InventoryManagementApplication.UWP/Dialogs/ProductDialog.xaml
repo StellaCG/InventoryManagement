@@ -4,9 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:InventoryManagementApplication.UWP.Dialogs"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
-    Title="TITLE"
+    Title="Product Information"
     PrimaryButtonText="Button1"
     SecondaryButtonText="Button2"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
@@ -16,14 +16,45 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Title"></TextBlock>
+            <TextBlock Grid.Column="0" Text="Name"></TextBlock>
+            <TextBox Grid.Column="1" Text="{Binding Path=Name, Mode=TwoWay}"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Description"></TextBlock>
             <TextBox Grid.Column="1" Text="{Binding Path=Description, Mode=TwoWay}"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Price"></TextBlock>
+            <controls:NumberBox Grid.Column="1" PlaceholderText="0.00" SmallChange="0.01"
+                                SpinButtonPlacementMode="Inline" Value="{Binding Path=Price, Mode=TwoWay}"
+                                ValidationMode="InvalidInputOverwritten"/>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox FontSize="10" PlaceholderText="Weight or Quantity" SelectedValue="{Binding Path=Type, Mode=TwoWay}">
+                <x:String>Weight</x:String>
+                <x:String>Quantity</x:String>
+                
+            </ComboBox>
         </Grid>
     </Grid>
 </ContentDialog>
