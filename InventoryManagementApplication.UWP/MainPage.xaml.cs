@@ -31,7 +31,7 @@ namespace InventoryManagementApplication.UWP
 
         private void Search_Click(object sender, RoutedEventArgs e)
         {
-
+            (DataContext as MainViewModel).Refresh();
         }
 
         private async void Add_Click(object sender, RoutedEventArgs e)
@@ -51,5 +51,17 @@ namespace InventoryManagementApplication.UWP
             var vm = DataContext as MainViewModel;
             if (vm != null) vm.Update();
         }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).Save();
+        }
+
+        private void Load_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).Load();
+
+        }
+
     }
 }

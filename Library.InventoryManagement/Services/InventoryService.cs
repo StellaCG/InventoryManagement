@@ -12,6 +12,8 @@ namespace Library.InventoryManagement.Services
 {
     public class InventoryService
     {
+        private string persistPath
+            = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}";
         private static InventoryService current;
         private List<Product> inventoryList;
         public List<Product> Inventory
@@ -107,15 +109,22 @@ namespace Library.InventoryManagement.Services
             else return null;
         }
 
-        public void Save(string fileName)
+        public void Save(string fileName = null)
         {
+            if (string.IsNullOrEmpty(fileName)) fileName = $"{persistPath}\\inventoryData.json";
+            else fileName = $"{persistPath}\\{fileName}.json";
+
             var inventoryJson = JsonConvert.SerializeObject(inventoryList
                 , new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
             File.WriteAllText(fileName, inventoryJson);
+
         }
 
-        public void Load(string fileName)
+        public void Load(string fileName = null)
         {
+            if (string.IsNullOrEmpty(fileName)) fileName = $"{persistPath}\\inventoryData.json";
+            else fileName = $"{persistPath}\\{fileName}.json";
+
             var inventoryJson = File.ReadAllText(fileName);
             inventoryList = JsonConvert.DeserializeObject<List<Product>>
                 (inventoryJson, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All })

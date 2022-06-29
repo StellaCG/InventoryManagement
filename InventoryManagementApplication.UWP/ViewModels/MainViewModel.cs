@@ -23,6 +23,12 @@ namespace InventoryManagementApplication.UWP.ViewModels
             get
             {
                 if (_inventoryService == null) return new ObservableCollection<Product>();
+                if (string.IsNullOrEmpty(Query)) return new ObservableCollection<Product>(_inventoryService.Inventory);
+                else
+                {
+                    return new ObservableCollection<Product>(_inventoryService.Inventory.Where(p => p.Name.ToLower().Contains(Query.ToLower())
+                        || p.Description.ToLower().Contains(Query.ToLower())));
+                }
                 return new ObservableCollection<Product>(_inventoryService.Inventory);
             }
         }
@@ -61,5 +67,22 @@ namespace InventoryManagementApplication.UWP.ViewModels
                 NotifyPropertyChanged("Inventory");
             }
         }
+
+        public void Save()
+        {
+            _inventoryService.Save();
+        }
+
+        public void Load()
+        {
+            _inventoryService.Load();
+            NotifyPropertyChanged("Inventory");
+        }
+        
+        public void Refresh()
+        {
+            NotifyPropertyChanged("Inventory");
+        }
+
     }
 }

@@ -16,11 +16,20 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="10*"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Text="{Binding Path=Query, Mode=TwoWay}"></TextBox>
-            <Button Grid.Column="1" Content="Search" HorizontalAlignment="Stretch" Click="Search_Click"></Button>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Load" HorizontalAlignment="Stretch" Click="Load_Click"></Button>
+                <Button Grid.Column="1" Content="Save" HorizontalAlignment="Stretch" Click="Save_Click"></Button>
+            </Grid>
+            <TextBox Grid.Column="1" Text="{Binding Path=Query, Mode=TwoWay}"></TextBox>
+            <Button Grid.Column="2" Content="Search" HorizontalAlignment="Stretch" Click="Search_Click"></Button>
         </Grid>
         <Grid Grid.Row="1">
             <ListBox ItemsSource="{Binding Path=Inventory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedProduct, Mode=TwoWay}">
