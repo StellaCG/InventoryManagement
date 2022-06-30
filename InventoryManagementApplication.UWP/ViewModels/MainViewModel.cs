@@ -16,6 +16,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
     {
         public string Query { get; set; }
         public Product SelectedProduct { get; set; }
+        public int SelectedSort { get; set; }
         private InventoryService _inventoryService;
 
         public ObservableCollection<Product> Inventory
@@ -23,7 +24,10 @@ namespace InventoryManagementApplication.UWP.ViewModels
             get
             {
                 if (_inventoryService == null) return new ObservableCollection<Product>();
-                if (string.IsNullOrEmpty(Query)) return new ObservableCollection<Product>(_inventoryService.Inventory);
+                if (string.IsNullOrEmpty(Query))
+                {
+                    return new ObservableCollection<Product>(_inventoryService.SortResults(SelectedSort));
+                }
                 else
                 {
                     return new ObservableCollection<Product>(_inventoryService.Inventory.Where(p => p.Name.ToLower().Contains(Query.ToLower())

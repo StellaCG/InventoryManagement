@@ -82,7 +82,12 @@ namespace Library.InventoryManagement.Services
         public List<Product> SortResults(int order)
         {
             List<Product> tmpInventory = inventoryList;
-            if (order == 1)
+            
+            if (order == 0)
+            {
+                return tmpInventory.OrderBy(p => p.Id).ToList();
+            }
+            else if (order == 1)
             {
                 // sort by name
                 tmpInventory.Sort(delegate (Product a, Product b)

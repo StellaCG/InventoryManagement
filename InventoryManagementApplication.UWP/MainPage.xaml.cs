@@ -63,5 +63,10 @@ namespace InventoryManagementApplication.UWP
 
         }
 
+        private void SortComboBox_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).Refresh(); 
+        }
+
     }
 }
