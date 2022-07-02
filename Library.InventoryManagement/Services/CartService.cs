@@ -6,14 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Library.InventoryManagement.Models;
 using Newtonsoft.Json;
+using Windows.Storage;
 
 namespace Library.InventoryManagement.Services
 {
     public class CartService
     {
+        private string persistPath
+            = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}";
         private static CartService current;
-        private List<Product> cartContents;
-        public List<Product> Cart
+        private List<Item> cartContents;
+        private List<StorageFile> _cartFiles;
+        public List<Item> Cart
         {
             get
             {
@@ -21,9 +25,18 @@ namespace Library.InventoryManagement.Services
             }
         }
 
+        public List<StorageFile> CartFiles
+        {
+            get
+            {
+                return _cartFiles;
+            }
+        }
+
         public CartService()
         {
-            cartContents = new List<Product>();
+            cartContents = new List<Item>();
+            _cartFiles = new List<StorageFile>();
         }
 
         public void Add(Product product, int quantity)
@@ -48,10 +61,23 @@ namespace Library.InventoryManagement.Services
                 return current;
             }
         }
+        private async Task GetAllCarts(StorageFolder folder)
+        {
+            var carts = await folder.GetItemsAsync();
+            foreach (var cart in carts)
+            {
+                if (cart is StorageFile && cart.Name.Contains("CartData")) _cartFiles.Add(cart as StorageFile);
+            }
+        }
 
         public List<Product> SortResults(int order)
         {
-            List<Product> tmpCart = cartContents;
+            List<Product> tmpCart = new List<Product>();
+            foreach (var p in cartContents.Where(i => i is Product).ToList())
+            {
+                tmpCart.Add(p as Product);
+            }
+
             if (order == 1)
             {
                 // sort by name
@@ -81,6 +107,9 @@ namespace Library.InventoryManagement.Services
 
         public void Save(string fileName)
         {
+            if (string.IsNullOrEmpty(fileName)) fileName = $"{persistPath}\\defaultCartData.json";
+            else fileName = $"{persistPath}\\{fileName}CartData.json";
+
             var cartJson = JsonConvert.SerializeObject(cartContents
                 , new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
             File.WriteAllText(fileName, cartJson);
@@ -88,10 +117,19 @@ namespace Library.InventoryManagement.Services
 
         public void Load(string fileName)
         {
+            if (string.IsNullOrEmpty(fileName)) fileName = $"{persistPath}\\defaultCartData.json";
+            else fileName = $"{persistPath}\\{fileName}CartData.json";
+
             var cartJson = File.ReadAllText(fileName);
-            cartContents = JsonConvert.DeserializeObject<List<Product>>
+            cartContents = JsonConvert.DeserializeObject<List<Item>>
                 (cartJson, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All })
-                ?? new List<Product>();
+                ?? new List<Item>();
+        }
+
+        public async Task LoadCarts()
+        {
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(@persistPath);
+            await GetAllCarts(folder);
         }
 
         public double CalculatePrice()

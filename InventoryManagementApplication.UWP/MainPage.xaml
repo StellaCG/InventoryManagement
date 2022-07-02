@@ -87,9 +87,9 @@
                     <x:String>Name</x:String>
                     <x:String>Unit Price</x:String>
                 </ComboBox>
-                <Button Content="Load Cart" Grid.Row="1" HorizontalAlignment="Stretch"></Button>
+                <Button Content="Load Cart" Grid.Row="1" HorizontalAlignment="Stretch" Click="Load_Cart_Click"></Button>
                 <Button Content="View/Edit Cart" Grid.Row="2" HorizontalAlignment="Stretch"></Button>
-                <Button Content="New Cart" Grid.Row="3" HorizontalAlignment="Stretch"></Button>
+                <Button Content="New Cart" Grid.Row="3" HorizontalAlignment="Stretch" Click="New_Cart_Click"></Button>
             </Grid>
         </Grid>
         <Grid Grid.Row="2">

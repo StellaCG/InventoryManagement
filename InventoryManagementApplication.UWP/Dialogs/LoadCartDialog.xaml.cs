@@ -1,5 +1,4 @@
 ﻿using InventoryManagementApplication.UWP.ViewModels;
-using Library.InventoryManagement.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,9 +18,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace InventoryManagementApplication.UWP.Dialogs
 {
-    public sealed partial class NewCartDialog : ContentDialog
+    public sealed partial class LoadCartDialog : ContentDialog
     {
-        public NewCartDialog()
+        public LoadCartDialog()
         {
             this.InitializeComponent();
             DataContext = new CartViewModel();
@@ -29,11 +28,11 @@ namespace InventoryManagementApplication.UWP.Dialogs
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            (DataContext as CartViewModel).Save();
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
         }
+
     }
 }
