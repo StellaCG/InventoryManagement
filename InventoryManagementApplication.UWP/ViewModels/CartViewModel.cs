@@ -53,12 +53,18 @@ namespace InventoryManagementApplication.UWP.ViewModels
             NotifyPropertyChanged("Cart");
         }
 
-        public async Task Load()
+        public async Task LoadDiag()
         {
             ContentDialog diag = new LoadCartDialog();
             await _cartService.LoadCarts();
             await diag.ShowAsync();
             NotifyPropertyChanged("Cart");
+        }
+
+        public void Load()
+        {
+            _cartService.Load(SelectedCart.DisplayName);
+            NotifyPropertyChanged("Inventory");
         }
 
     }

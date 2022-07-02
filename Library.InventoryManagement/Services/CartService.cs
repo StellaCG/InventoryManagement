@@ -115,10 +115,10 @@ namespace Library.InventoryManagement.Services
             File.WriteAllText(fileName, cartJson);
         }
 
-        public void Load(string fileName)
+        public void Load(string fileName = null)
         {
             if (string.IsNullOrEmpty(fileName)) fileName = $"{persistPath}\\defaultCartData.json";
-            else fileName = $"{persistPath}\\{fileName}CartData.json";
+            else fileName = $"{persistPath}\\{fileName}.json";
 
             var cartJson = File.ReadAllText(fileName);
             cartContents = JsonConvert.DeserializeObject<List<Item>>
