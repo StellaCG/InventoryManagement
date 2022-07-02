@@ -1,7 +1,4 @@
-﻿using InventoryManagementApplication.UWP.ViewModels;
-using Library.InventoryManagement.Models;
-using Library.InventoryManagement.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,30 +17,22 @@ using Windows.UI.Xaml.Navigation;
 
 namespace InventoryManagementApplication.UWP.Dialogs
 {
-    public sealed partial class ProductDialog : ContentDialog
+    public sealed partial class NewCartDialog : ContentDialog
     {
-        public ProductDialog()
+        public NewCartDialog()
         {
             this.InitializeComponent();
-            this.DataContext = new Product();
-        }
-
-        public ProductDialog(ItemViewModel selectedIVM)
-        {
-            this.InitializeComponent();
-            this.DataContext = selectedIVM;
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            var viewModel = DataContext as Product;
-            
-            if ((DataContext as Product).Type == "Quantity") InventoryService.Current.AddOrUpdate(DataContext as Product);
+            // var viewModel = DataContext as ProductViewModel;
+            /*if ((DataContext as Product).Type == "Quantity") InventoryService.Current.AddOrUpdate(DataContext as Product);
             else
             {
                 var pbw = new ProductByWeight(DataContext as Product);
                 InventoryService.Current.AddOrUpdate(pbw);
-            }
+            }*/
             // TODO: use a conversion constructor from view model -> todo
 
             // InventoryService.Current.AddOrUpdate(DataContext as Product);

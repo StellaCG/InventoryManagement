@@ -102,7 +102,7 @@ namespace Library.InventoryManagement.Services
                 // Console.WriteLine(p.GetType());
                 if (p.GetType() == typeof(ProductByWeight))
                 {
-                    checkoutPrice += (p.Weight * p.Price);
+                    checkoutPrice += ((p as ProductByWeight).Weight * p.Price);
                 }
                 else
                 {

@@ -29,6 +29,7 @@ namespace Library.InventoryManagement.Models
             Price = product.Price;
             Quantity = 0;
             Weight = product.Quantity;
+            Type = "Weight";
         }
 
         public override string ToString()

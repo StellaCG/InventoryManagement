@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using static InventoryManagementApplication.UWP.ViewModels.MainViewModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -37,7 +38,7 @@ namespace InventoryManagementApplication.UWP
         private async void Add_Click(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as MainViewModel;
-            if (vm != null) await vm.Add();
+            if (vm != null) await vm.Add(ItemType.Product);
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)

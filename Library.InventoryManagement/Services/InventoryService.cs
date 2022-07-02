@@ -15,8 +15,8 @@ namespace Library.InventoryManagement.Services
         private string persistPath
             = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}";
         private static InventoryService current;
-        private List<Product> inventoryList;
-        public List<Product> Inventory
+        private List<Item> inventoryList;
+        public List<Item> Inventory
         {
             get
             {
@@ -44,22 +44,18 @@ namespace Library.InventoryManagement.Services
 
         public InventoryService()
         {
-            inventoryList = new List<Product>();
+            inventoryList = new List<Item>();
         }
 
-        public void Create(Product product)
+        public void Create(Item item)
         {
-            product.Id = NextId;
-            Inventory.Add(product);
+            item.Id = NextId;
+            Inventory.Add(item);
         }
 
-        public void Update(Product product)
+        public void Update(Item item)
         {
-            if (product is ProductByWeight)
-            {
-                product.TotalPrice = product.Price * product.Weight;
-            }
-            else product.TotalPrice = product.Price * product.Quantity;
+            
         }
 
         public void Delete(int index)
@@ -81,7 +77,11 @@ namespace Library.InventoryManagement.Services
 
         public List<Product> SortResults(int order)
         {
-            List<Product> tmpInventory = inventoryList;
+            List<Product> tmpInventory = new List<Product>();
+            foreach (var p in inventoryList.Where(i => i is Product).ToList())
+            {
+                tmpInventory.Add(p as Product);
+            }
             
             if (order == 0)
             {
@@ -131,9 +131,9 @@ namespace Library.InventoryManagement.Services
             else fileName = $"{persistPath}\\{fileName}.json";
 
             var inventoryJson = File.ReadAllText(fileName);
-            inventoryList = JsonConvert.DeserializeObject<List<Product>>
+            inventoryList = JsonConvert.DeserializeObject<List<Item>>
                 (inventoryJson, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All })
-                ?? new List<Product>();
+                ?? new List<Item>();
 
         }
     }

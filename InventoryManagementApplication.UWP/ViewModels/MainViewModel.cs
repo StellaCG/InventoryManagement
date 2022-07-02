@@ -9,31 +9,33 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
 
 namespace InventoryManagementApplication.UWP.ViewModels
 {
-    class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged
     {
         public string Query { get; set; }
-        public Product SelectedProduct { get; set; }
+        public ItemViewModel SelectedItem { get; set; }
         public int SelectedSort { get; set; }
         private InventoryService _inventoryService;
 
-        public ObservableCollection<Product> Inventory
+        public ObservableCollection<ItemViewModel> Inventory
         {
             get
             {
-                if (_inventoryService == null) return new ObservableCollection<Product>();
+                if (_inventoryService == null) return new ObservableCollection<ItemViewModel>();
                 if (string.IsNullOrEmpty(Query))
                 {
-                    return new ObservableCollection<Product>(_inventoryService.SortResults(SelectedSort));
+                    return new ObservableCollection<ItemViewModel>(_inventoryService.SortResults(SelectedSort).Select(p => new ItemViewModel(p)));
                 }
                 else
                 {
-                    return new ObservableCollection<Product>(_inventoryService.Inventory.Where(p => p.Name.ToLower().Contains(Query.ToLower())
-                        || p.Description.ToLower().Contains(Query.ToLower())));
+                    return new ObservableCollection<ItemViewModel>(_inventoryService.Inventory.Select(i=> new ItemViewModel(i)).
+                        Where(i => i.Name.ToLower().Contains(Query.ToLower())
+                        || i.Description.ToLower().Contains(Query.ToLower())));
                 }
-                return new ObservableCollection<Product>(_inventoryService.Inventory);
+                return new ObservableCollection<ItemViewModel>(_inventoryService.Inventory.Select(i => new ItemViewModel(i)));
             }
         }
 
@@ -48,25 +50,40 @@ namespace InventoryManagementApplication.UWP.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public async Task Add()
+        public async Task Add(ItemType iType)
         {
-            var diag = new ProductDialog();
+            ContentDialog diag = null;
+            if (iType == ItemType.ProductByWeight)
+            {
+                diag = new ProductDialog();
+            } else if (iType == ItemType.Product)
+            {
+                diag = new ProductDialog();
+            } else if (iType == ItemType.Item)
+            {
+                diag = new ProductDialog();
+            } else
+            {
+                throw new NotImplementedException();
+            }
             await diag.ShowAsync();
             NotifyPropertyChanged("Inventory");
         }
 
         public void Remove()
         {
-            var id = SelectedProduct?.Id ?? -1;
-            if (id >= 1) _inventoryService.Delete(SelectedProduct.Id);
+            var id = SelectedItem?.Id ?? -1;
+            if (id >= 1) _inventoryService.Delete(SelectedItem.Id);
             NotifyPropertyChanged("Inventory");
         }
 
         public async void Update()
         {
-            if (SelectedProduct != null)
+            if (SelectedItem != null)
             {
-                var diag = new ProductDialog(SelectedProduct);
+                // check if product or productbyweight
+                // replace SelectedProduct with SelectedItem.BoundProduct or SelectedItem.BoundProductByWeight
+                var diag = new ProductDialog(SelectedItem);
                 await diag.ShowAsync();
                 NotifyPropertyChanged("Inventory");
             }
@@ -86,6 +103,11 @@ namespace InventoryManagementApplication.UWP.ViewModels
         public void Refresh()
         {
             NotifyPropertyChanged("Inventory");
+        }
+
+        public enum ItemType
+        {
+            ProductByWeight, Product, Item
         }
 
     }

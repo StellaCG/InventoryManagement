@@ -50,7 +50,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0" FontSize="10" PlaceholderText="Quantity" SelectedIndex="{Binding Path=Type, Mode=TwoWay}">
+            <ComboBox Grid.Column="0" FontSize="10" PlaceholderText="Quantity" SelectedItem="{Binding Path=Type, Mode=TwoWay}">
                 <x:String>Quantity</x:String>
                 <x:String>Weight</x:String>
             </ComboBox>
