@@ -76,6 +76,18 @@ namespace InventoryManagementApplication.UWP
             await vm.LoadDiag();
         }
 
+        private void Nav_Cart_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage), null);
+        }
+
+        private async void Add_Cart_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = new CartViewModel();
+            vm.SelectedItem = (DataContext as MainViewModel).SelectedItem;
+            await vm.AddDiag();
+        }
+
         private void SortComboBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
             (DataContext as MainViewModel).Refresh(); 

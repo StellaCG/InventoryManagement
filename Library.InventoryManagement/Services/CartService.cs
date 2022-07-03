@@ -15,6 +15,7 @@ namespace Library.InventoryManagement.Services
         private string persistPath
             = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}";
         private static CartService current;
+        public string currentCartName;
         private List<Item> cartContents;
         private List<StorageFile> _cartFiles;
         public List<Item> Cart
@@ -39,10 +40,18 @@ namespace Library.InventoryManagement.Services
             _cartFiles = new List<StorageFile>();
         }
 
-        public void Add(Product product, int quantity)
+        public void Add(Product product, double quantity)
         {
-            product.Quantity = quantity;
-            Cart.Add(product);
+            if (product is ProductByWeight)
+            {
+                (product as ProductByWeight).Weight = quantity;
+                Cart.Add(product as ProductByWeight);
+            }
+            else if (product is Product)
+            {
+                product.Quantity = (int)quantity;
+                Cart.Add(product);
+            }
         }
 
         public void Delete(int index, int amount)
@@ -66,7 +75,7 @@ namespace Library.InventoryManagement.Services
             var carts = await folder.GetItemsAsync();
             foreach (var cart in carts)
             {
-                if (cart is StorageFile && cart.Name.Contains("CartData")) _cartFiles.Add(cart as StorageFile);
+                if (cart is StorageFile && cart.Name.Contains("CartData") && !_cartFiles.Any(c => c.DisplayName == (cart as StorageFile).DisplayName)) _cartFiles.Add(cart as StorageFile);
             }
         }
 

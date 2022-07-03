@@ -35,7 +35,12 @@ namespace Library.InventoryManagement.Services
 
         public void AddOrUpdate(Product product)
         {
-            if (product.Id <= 0)
+            /*if (Inventory.Any(p => (p as Product).Id == product.Id))
+            {
+                var tmp = Inventory.FindIndex(p => (p as Product).Id == product.Id);
+                Inventory[tmp] = product;
+            }*/
+            if (product.Id < 0)
             {
                 product.Id = NextId;
                 Inventory.Add(product);

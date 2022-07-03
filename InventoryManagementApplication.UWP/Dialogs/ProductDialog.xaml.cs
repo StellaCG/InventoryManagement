@@ -25,7 +25,7 @@ namespace InventoryManagementApplication.UWP.Dialogs
         public ProductDialog()
         {
             this.InitializeComponent();
-            this.DataContext = new Product();
+            this.DataContext = new ItemViewModel();
         }
 
         public ProductDialog(ItemViewModel selectedIVM)
@@ -36,14 +36,16 @@ namespace InventoryManagementApplication.UWP.Dialogs
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            var viewModel = DataContext as Product;
-            
-            if ((DataContext as Product).Type == "Quantity") InventoryService.Current.AddOrUpdate(DataContext as Product);
-            else
+            var viewModel = DataContext as ItemViewModel;
+            if (viewModel.IsProductByWeight)
             {
-                var pbw = new ProductByWeight(DataContext as Product);
+                var pbw = new ProductByWeight(viewModel.BoundProductByWeight);
                 InventoryService.Current.AddOrUpdate(pbw);
+            } else if (viewModel.IsProduct)
+            {
+                InventoryService.Current.AddOrUpdate(viewModel.BoundProduct);
             }
+            
             // TODO: use a conversion constructor from view model -> todo
 
             // InventoryService.Current.AddOrUpdate(DataContext as Product);

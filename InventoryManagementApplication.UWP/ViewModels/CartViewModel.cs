@@ -18,6 +18,8 @@ namespace InventoryManagementApplication.UWP.ViewModels
     {
         private CartService _cartService;
         public StorageFile SelectedCart { get; set; }
+        public ItemViewModel SelectedItem { get; set; }
+        public double Amount { get; set; }
 
         public string FileName { get; set; }
 
@@ -34,7 +36,17 @@ namespace InventoryManagementApplication.UWP.ViewModels
 
         public void Save()
         {
-            _cartService.Save(FileName);
+            _cartService.Save(_cartService.currentCartName.TrimEnd("CartData"));
+        }
+
+        public ObservableCollection<ItemViewModel> Cart
+        {
+            get
+            {
+                if (_cartService == null) return new ObservableCollection<ItemViewModel>();
+                // else return new ObservableCollection<ItemViewModel>(_inventoryService.SortResults(SelectedSort).Select(p => new ItemViewModel(p)));
+                else return new ObservableCollection<ItemViewModel>(_cartService.Cart.Select(i => new ItemViewModel(i)));
+            }
         }
 
         public ObservableCollection<StorageFile> CartFiles
@@ -61,10 +73,46 @@ namespace InventoryManagementApplication.UWP.ViewModels
             NotifyPropertyChanged("Cart");
         }
 
+        public async Task AddDiag()
+        {
+            ContentDialog diag = new CartDialog(SelectedItem);
+            await diag.ShowAsync();
+            NotifyPropertyChanged("Inventory");
+        }
+
         public void Load()
         {
+            _cartService.currentCartName = SelectedCart.DisplayName;
             _cartService.Load(SelectedCart.DisplayName);
             NotifyPropertyChanged("Inventory");
+        }
+
+        public async Task Add(ItemType iType)
+        {
+            ContentDialog diag = new ProductDialog();
+            if (iType == ItemType.ProductByWeight)
+            {
+                // var pbw = new ProductByWeight(SelectedItem as Product);
+            }
+            else if (iType == ItemType.Product)
+            {
+                diag = new ProductDialog();
+            }
+            else if (iType == ItemType.Item)
+            {
+                diag = new ProductDialog();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            await diag.ShowAsync();
+            NotifyPropertyChanged("Inventory");
+        }
+
+        public enum ItemType
+        {
+            ProductByWeight, Product, Item
         }
 
     }

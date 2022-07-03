@@ -10,7 +10,7 @@ namespace Library.InventoryManagement.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Id { get; set; }
+        public int Id { get; set; } = -1;
 
         public override string ToString()
         {

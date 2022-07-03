@@ -11,6 +11,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
 {
     public class ItemViewModel : INotifyPropertyChanged
     {
+        public double Amount { get; set; }
         public string Name
         {
             get
@@ -55,6 +56,12 @@ namespace InventoryManagementApplication.UWP.ViewModels
                 else if (IsProductByWeight) return BoundProductByWeight?.Price ?? 0;
                 else return 0;
             }
+            set
+            {
+                if (BoundItem == null) return;
+                if (IsProductByWeight) BoundProductByWeight.Price = value;
+                else if (IsProduct) BoundProduct.Price = value;
+            }
         }
 
         public int Quantity
@@ -63,6 +70,11 @@ namespace InventoryManagementApplication.UWP.ViewModels
             {
                 if (IsProduct) return BoundProduct?.Quantity ?? 0;
                 else return 0;
+            }
+            set
+            {
+                if (BoundItem == null) return;
+                if (IsProduct) BoundProduct.Quantity = value;
             }
         }
 
@@ -74,6 +86,11 @@ namespace InventoryManagementApplication.UWP.ViewModels
                 else if (IsProduct) return BoundProduct?.Quantity ?? 0;
                 else return 0;
             }
+            set
+            {
+                if (BoundItem == null) return;
+                if (IsProductByWeight) BoundProductByWeight.Weight = value;
+            }
         }
 
         public bool Bogo
@@ -83,6 +100,12 @@ namespace InventoryManagementApplication.UWP.ViewModels
                 if (IsProductByWeight) return BoundProductByWeight?.Bogo ?? false;
                 else if (IsProduct) return BoundProduct?.Bogo ?? false;
                 else return false;
+            }
+            set
+            {
+                if (BoundItem == null) return;
+                if (IsProductByWeight) BoundProductByWeight.Bogo = value;
+                else if (IsProduct) BoundProduct.Bogo = value;
             }
         }
 
