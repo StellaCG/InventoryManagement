@@ -20,8 +20,9 @@ namespace InventoryManagementApplication.UWP.ViewModels
         public StorageFile SelectedCart { get; set; }
         public ItemViewModel SelectedItem { get; set; }
         public double Amount { get; set; }
-
+        public double CheckoutPrice { get; set; }
         public string FileName { get; set; }
+        public string PaymentID { get; set; }
 
         public CartViewModel()
         {
@@ -36,7 +37,8 @@ namespace InventoryManagementApplication.UWP.ViewModels
 
         public void Save()
         {
-            _cartService.Save(_cartService.currentCartName.TrimEnd("CartData"));
+            int len = _cartService.currentCartName.Length;
+            _cartService.Save(_cartService.currentCartName.Remove(len-8,8));
         }
 
         public ObservableCollection<ItemViewModel> Cart
@@ -80,6 +82,13 @@ namespace InventoryManagementApplication.UWP.ViewModels
             NotifyPropertyChanged("Inventory");
         }
 
+        public async Task PaymentDiag()
+        {
+            ContentDialog diag = new PaymentDialog();
+            await diag.ShowAsync();
+            NotifyPropertyChanged("Cart");
+        }
+
         public void Load()
         {
             _cartService.currentCartName = SelectedCart.DisplayName;
@@ -108,6 +117,25 @@ namespace InventoryManagementApplication.UWP.ViewModels
             }
             await diag.ShowAsync();
             NotifyPropertyChanged("Inventory");
+        }
+
+        public void Checkout()
+        {
+            CheckoutPrice = _cartService.CalculatePrice();
+        }
+
+        public void CheckoutAndExit()
+        {
+            var _tmpInventory = InventoryService.Current.Inventory;
+            for (int i = 0; i < _cartService.Cart.Count; i++)
+            {
+                if (_tmpInventory.Contains(_cartService.Cart[i]))
+                {
+                    InventoryService.Current.Delete(_tmpInventory.FindIndex(p => p == _cartService.Cart[i]));
+                    _cartService.Cart.RemoveAt(i);
+                }
+            }
+            
         }
 
         public enum ItemType

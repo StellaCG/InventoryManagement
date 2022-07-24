@@ -37,5 +37,12 @@ namespace InventoryManagementApplication.UWP
         {
             (DataContext as CartViewModel).Save();
         }
+
+        private async void Checkout_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = (DataContext as CartViewModel);
+            vm.Checkout();
+            await vm.PaymentDiag();
+        }
     }
 }
