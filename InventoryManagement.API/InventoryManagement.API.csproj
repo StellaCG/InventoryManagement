@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Library.InventoryManagement">
+      <HintPath>..\Library.InventoryManagement\bin\x64\Debug\Library.InventoryManagement.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
