@@ -22,9 +22,9 @@ namespace Library.InventoryManagement.Utility
                     var response = await client.GetStringAsync(url).ConfigureAwait(false);
                     return response;
                 }
-            } catch(Exception e)
+            } catch(HttpRequestException e)
             {
-
+                Console.WriteLine(e.InnerException.Message);
             }
 
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.InventoryManagement.Models;
+using Library.InventoryManagement.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -49,7 +50,8 @@ namespace Library.InventoryManagement.Services
 
         public InventoryService()
         {
-            inventoryList = new List<Item>();
+            var inventoryJson = new WebRequestHandler().Get("http://localhost:5015/Item").Result;
+            inventoryList = JsonConvert.DeserializeObject<List<Item>>(inventoryJson);
         }
 
         public void Create(Item item)

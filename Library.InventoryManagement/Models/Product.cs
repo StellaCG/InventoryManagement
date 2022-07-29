@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Library.InventoryManagement.Utility;
+using Newtonsoft.Json;
+using System;
 
 namespace Library.InventoryManagement.Models
 {
-
+    [JsonConverter(typeof(ItemJsonConverter))]
     public class Product : Item
     {
         public double Price { get; set; }
