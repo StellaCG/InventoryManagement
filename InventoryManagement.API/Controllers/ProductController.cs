@@ -27,14 +27,26 @@ namespace InventoryManagement.API.Controllers
             if (product.Id <= 0)
             {
                 product.Id = FakeDatabase.NextId();
-                FakeDatabase.Products.Add(product);
-            }
-
-            var itemToUpdate = FakeDatabase.Products.FirstOrDefault(p => p.Id == product.Id);
-            if (itemToUpdate == null)
-            {
-                FakeDatabase.Products.Remove(itemToUpdate);
-                FakeDatabase.Products.Add(product);
+                if (product.Type == "Quantity")
+                {
+                    FakeDatabase.Products.Add(product);
+                    var itemToUpdate = FakeDatabase.Products.FirstOrDefault(p => p.Id == product.Id);
+                    if (itemToUpdate == null)
+                    {
+                        FakeDatabase.Products.Remove(itemToUpdate);
+                        FakeDatabase.Products.Add(product);
+                    }
+                }
+                else if (product.Type == "Weight")
+                {
+                    FakeDatabase.ProductsByWeight.Add(product as ProductByWeight);
+                    var itemToUpdate = FakeDatabase.ProductsByWeight.FirstOrDefault(p => p.Id == product.Id);
+                    if (itemToUpdate == null)
+                    {
+                        FakeDatabase.ProductsByWeight.Remove(itemToUpdate);
+                        FakeDatabase.ProductsByWeight.Add(product as ProductByWeight);
+                    }
+                }
             }
 
             return product;
@@ -47,7 +59,10 @@ namespace InventoryManagement.API.Controllers
             if (itemToDelete != null)
             {
                 var item = itemToDelete as Product;
-                if (item != null)
+                if (item.Type == "Weight")
+                {
+                    FakeDatabase.ProductsByWeight.Remove(item as ProductByWeight);
+                } else if (item.Type == "Quantity")
                 {
                     FakeDatabase.Products.Remove(item);
                 }

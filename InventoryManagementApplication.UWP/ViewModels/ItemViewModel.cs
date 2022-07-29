@@ -46,6 +46,11 @@ namespace InventoryManagementApplication.UWP.ViewModels
                 else if (IsProductByWeight) return BoundProductByWeight?.Type ?? string.Empty;
                 else return string.Empty;
             }
+            set
+            {
+                if (value == "Weight") BoundProduct.Type = "Weight";
+                else if (value == "Quantity") BoundProduct.Type = "Quantity";
+            }
         }
 
         public double Price

@@ -20,5 +20,6 @@ namespace InventoryManagement.API.Controllers
         {
             return FakeDatabase.ProductsByWeight;
         }
+
     }
 }

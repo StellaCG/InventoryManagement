@@ -41,11 +41,30 @@ namespace Library.InventoryManagement.Services
                 var tmp = Inventory.FindIndex(p => (p as Product).Id == product.Id);
                 Inventory[tmp] = product;
             }*/
-            if (product.Id < 0)
+
+            if (product.Type == "Quantity" || product.Type == "Weight")
+            {
+                var response = new WebRequestHandler().Post("http://localhost:5015/Product/AddOrUpdate", product).Result;
+                var newProduct = JsonConvert.DeserializeObject<Product>(response);
+                var oldVersion = inventoryList.FirstOrDefault(p => p.Id == newProduct.Id);
+
+                if (oldVersion != null)
+                {
+                    var index = inventoryList.IndexOf(oldVersion);
+                    inventoryList.RemoveAt(index);
+                    inventoryList.Insert(index, newProduct);
+                }
+                else
+                {
+                    inventoryList.Add(newProduct);
+                }
+            }
+            
+            /*if (product.Id < 0)
             {
                 product.Id = NextId;
                 Inventory.Add(product);
-            }
+            }*/
         }
 
         public InventoryService()
@@ -67,7 +86,10 @@ namespace Library.InventoryManagement.Services
 
         public void Delete(int index)
         {
-            inventoryList.RemoveAt(inventoryList.FindIndex(p => p.Id == index));
+            var response = new WebRequestHandler().Get($"http://localhost:5015/Product/Delete/{index}");
+            var productDelete = inventoryList.FirstOrDefault(p => p.Id == index);
+            if (productDelete == null) return;
+            inventoryList.Remove(productDelete);
         }
 
         public static InventoryService Current

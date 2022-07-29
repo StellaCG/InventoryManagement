@@ -37,11 +37,11 @@ namespace InventoryManagementApplication.UWP.Dialogs
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var viewModel = DataContext as ItemViewModel;
-            if (viewModel.IsProductByWeight)
+            if (viewModel.Type == "Weight")
             {
-                var pbw = new ProductByWeight(viewModel.BoundProductByWeight);
+                var pbw = new ProductByWeight(viewModel.BoundProduct);
                 InventoryService.Current.AddOrUpdate(pbw);
-            } else if (viewModel.IsProduct)
+            } else if (viewModel.Type == "Quantity")
             {
                 InventoryService.Current.AddOrUpdate(viewModel.BoundProduct);
             }
