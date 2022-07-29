@@ -24,6 +24,12 @@ namespace InventoryManagement.API.Controllers
         [HttpPost("AddOrUpdate")]
         public Product AddOrUpdate(Product product)
         {
+            if (product.Quantity <= 0)
+            {
+                Delete(product.Id);
+                return product;
+            }
+
             if (product.Id <= 0)
             {
                 product.Id = FakeDatabase.NextId();

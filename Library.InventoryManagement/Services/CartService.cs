@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.InventoryManagement.Models;
+using Library.InventoryManagement.Utility;
 using Newtonsoft.Json;
 using Windows.Storage;
 
@@ -36,27 +37,53 @@ namespace Library.InventoryManagement.Services
 
         public CartService()
         {
-            cartContents = new List<Item>();
+            var cartJson = new WebRequestHandler().Get("http://localhost:5015/Cart").Result;
+            cartContents = JsonConvert.DeserializeObject<List<Item>>(cartJson);
             _cartFiles = new List<StorageFile>();
         }
 
-        public void Add(Product product, double quantity)
+        public void AddOrUpdate(Product product)
         {
-            if (product is ProductByWeight)
+            var response = new WebRequestHandler().Post("http://localhost:5015/Cart/AddOrUpdate", product).Result;
+            var newProduct = JsonConvert.DeserializeObject<Product>(response);
+            if (newProduct.Quantity <= 0) return;
+            var oldVersion = cartContents.FirstOrDefault(p => p.Id == newProduct.Id);
+            
+            if (oldVersion != null)
             {
-                (product as ProductByWeight).Weight = quantity;
-                Cart.Add(product as ProductByWeight);
-            }
-            else if (product is Product)
+                var index = cartContents.IndexOf(oldVersion);
+                cartContents.RemoveAt(index);
+                cartContents.Insert(index, newProduct);
+            } else
             {
-                product.Quantity = (int)quantity;
-                Cart.Add(product);
+                cartContents.Add(newProduct);
             }
         }
 
-        public void Delete(int index, int amount)
+        public void Delete(int index)
         {
-            cartContents.RemoveAt(index);
+            var response = new WebRequestHandler().Get($"http://localhost:5015/Cart/Delete/{index}");
+            var productDelete = cartContents.FirstOrDefault(p => p.Id == index);
+            var productUpdate = InventoryService.Current.Inventory.FirstOrDefault(p => p.Id == index);
+            if (productUpdate != null)
+            {
+                var product = productUpdate as Product;
+                if (product.Type == "Weight")
+                {
+                    var tmpUpdate = productUpdate as ProductByWeight;
+                    tmpUpdate.Weight += (productDelete as ProductByWeight).Weight;
+                    InventoryService.Current.Inventory.Remove(product);
+                    InventoryService.Current.Inventory.Add(tmpUpdate);
+                } else if (product.Type == "Quantity")
+                {
+                    var tmpUpdate = product;
+                    tmpUpdate.Quantity += (productDelete as Product).Quantity;
+                    InventoryService.Current.Inventory.Remove(product);
+                    InventoryService.Current.Inventory.Add(tmpUpdate);
+                }
+            }
+            if (productDelete == null) return;
+            cartContents.Remove(productDelete);
         }
 
         public static CartService Current

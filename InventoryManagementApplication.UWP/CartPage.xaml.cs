@@ -38,6 +38,17 @@ namespace InventoryManagementApplication.UWP
             (DataContext as CartViewModel).Save();
         }
 
+        private async void Edit_Cart_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as CartViewModel;
+            if (vm != null) vm.Update();
+        }
+
+        private void Delete_From_Cart_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CartViewModel).Remove();
+        }
+
         private async void Checkout_Click(object sender, RoutedEventArgs e)
         {
             var vm = (DataContext as CartViewModel);

@@ -88,6 +88,24 @@ namespace InventoryManagementApplication.UWP.ViewModels
             await diag.ShowAsync();
             NotifyPropertyChanged("Cart");
         }
+        public async void Update()
+        {
+            if (SelectedItem != null)
+            {
+                // check if product or productbyweight
+                // replace SelectedProduct with SelectedItem.BoundProduct or SelectedItem.BoundProductByWeight
+                var diag = new CartDialog(SelectedItem);
+                await diag.ShowAsync();
+                NotifyPropertyChanged("Inventory");
+            }
+        }
+
+        public void Remove()
+        {
+            var id = SelectedItem?.Id ?? -1;
+            if (id >= 1) _cartService.Delete(SelectedItem.Id);
+            NotifyPropertyChanged("Inventory");
+        }
 
         public void Load()
         {

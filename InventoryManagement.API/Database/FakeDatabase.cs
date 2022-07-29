@@ -26,7 +26,7 @@ namespace InventoryManagement.API.Database
 
         public static List<ProductByWeight> ProductsByWeight = new List<ProductByWeight>
         {
-            new ProductByWeight { Name = "Test ProductByWeight1", Description = "Description1", Id = 6, Weight = 10, Price = 5, Type = "Weight"},
+            new ProductByWeight { Name = "Test ProductByWeight1", Description = "Description1", Id = 6, Weight = 10, Quantity = 10, Price = 5, Type = "Weight"},
             new ProductByWeight { Name = "Test ProductByWeight2", Description = "Description2", Id = 7, Weight = 10, Price = 5, Type = "Weight"},
             new ProductByWeight { Name = "Test ProductByWeight3", Description = "Description3", Id = 8, Weight = 10, Price = 5, Type = "Weight"},
             new ProductByWeight { Name = "Test ProductByWeight4", Description = "Description4", Id = 9, Weight = 10, Price = 5, Type = "Weight", Bogo = true}

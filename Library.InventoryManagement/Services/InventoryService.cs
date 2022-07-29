@@ -46,6 +46,7 @@ namespace Library.InventoryManagement.Services
             {
                 var response = new WebRequestHandler().Post("http://localhost:5015/Product/AddOrUpdate", product).Result;
                 var newProduct = JsonConvert.DeserializeObject<Product>(response);
+                if (newProduct.Quantity <= 0) return;
                 var oldVersion = inventoryList.FirstOrDefault(p => p.Id == newProduct.Id);
 
                 if (oldVersion != null)
