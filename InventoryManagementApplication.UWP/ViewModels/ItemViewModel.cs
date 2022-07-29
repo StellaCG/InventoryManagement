@@ -74,12 +74,14 @@ namespace InventoryManagementApplication.UWP.ViewModels
             get
             {
                 if (IsProduct) return BoundProduct?.Quantity ?? 0;
+                else if (IsProductByWeight) return BoundProductByWeight?.Quantity ?? 0;
                 else return 0;
             }
             set
             {
                 if (BoundItem == null) return;
                 if (IsProduct) BoundProduct.Quantity = value;
+                else if (IsProductByWeight) BoundProductByWeight.Quantity = value;
             }
         }
 

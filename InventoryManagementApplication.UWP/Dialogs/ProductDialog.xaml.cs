@@ -39,8 +39,17 @@ namespace InventoryManagementApplication.UWP.Dialogs
             var viewModel = DataContext as ItemViewModel;
             if (viewModel.Type == "Weight")
             {
-                var pbw = new ProductByWeight(viewModel.BoundProduct);
-                InventoryService.Current.AddOrUpdate(pbw);
+                viewModel.Weight = viewModel.Quantity;
+                if (viewModel.IsProduct)
+                {
+                    var pbw = new ProductByWeight(viewModel.BoundProduct);
+                    InventoryService.Current.AddOrUpdate(pbw);
+                } else if (viewModel.IsProductByWeight)
+                {
+                    var pbw = new ProductByWeight(viewModel.BoundProductByWeight);
+                    InventoryService.Current.AddOrUpdate(pbw);
+                }
+
             } else if (viewModel.Type == "Quantity")
             {
                 InventoryService.Current.AddOrUpdate(viewModel.BoundProduct);

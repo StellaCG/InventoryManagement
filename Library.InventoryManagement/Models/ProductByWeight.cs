@@ -22,6 +22,7 @@ namespace Library.InventoryManagement.Models
             Price = product.Price;
             Quantity = product.Quantity;
             Weight = product.Weight;
+            Type = "Weight";
         }
 
         public ProductByWeight(Product product)
@@ -30,7 +31,7 @@ namespace Library.InventoryManagement.Models
             Id = product.Id;
             Description = product.Description;
             Price = product.Price;
-            Quantity = 0;
+            Quantity = product.Quantity;
             Weight = product.Quantity;
             Type = "Weight";
         }

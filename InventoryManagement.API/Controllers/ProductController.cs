@@ -30,22 +30,27 @@ namespace InventoryManagement.API.Controllers
                 if (product.Type == "Quantity")
                 {
                     FakeDatabase.Products.Add(product);
-                    var itemToUpdate = FakeDatabase.Products.FirstOrDefault(p => p.Id == product.Id);
-                    if (itemToUpdate == null)
-                    {
-                        FakeDatabase.Products.Remove(itemToUpdate);
-                        FakeDatabase.Products.Add(product);
-                    }
                 }
                 else if (product.Type == "Weight")
                 {
                     FakeDatabase.ProductsByWeight.Add(product as ProductByWeight);
-                    var itemToUpdate = FakeDatabase.ProductsByWeight.FirstOrDefault(p => p.Id == product.Id);
-                    if (itemToUpdate == null)
-                    {
-                        FakeDatabase.ProductsByWeight.Remove(itemToUpdate);
-                        FakeDatabase.ProductsByWeight.Add(product as ProductByWeight);
-                    }
+                }
+            }
+            else if (product.Type == "Quantity")
+            {
+                var itemToUpdate = FakeDatabase.Products.FirstOrDefault(p => p.Id == product.Id);
+                if (itemToUpdate != null)
+                {
+                    FakeDatabase.Products.Remove(itemToUpdate);
+                    FakeDatabase.Products.Add(product);
+                }
+            } else if (product.Type == "Weight")
+            {
+                var itemToUpdate = FakeDatabase.ProductsByWeight.FirstOrDefault(p => p.Id == product.Id);
+                if (itemToUpdate != null)
+                {
+                    FakeDatabase.ProductsByWeight.Remove(itemToUpdate);
+                    FakeDatabase.ProductsByWeight.Add(product as ProductByWeight);
                 }
             }
 
