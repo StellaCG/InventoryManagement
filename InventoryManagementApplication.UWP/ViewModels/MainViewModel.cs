@@ -105,6 +105,14 @@ namespace InventoryManagementApplication.UWP.ViewModels
             NotifyPropertyChanged("Inventory");
         }
 
+        public async Task Add_To_Cart(ItemViewModel selection)
+        {
+            var vm = new CartViewModel();
+            vm.SelectedItem = selection;
+            await vm.AddDiag();
+            NotifyPropertyChanged("Inventory");
+        }
+
         public enum ItemType
         {
             ProductByWeight, Product, Item

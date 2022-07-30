@@ -104,7 +104,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
         {
             var id = SelectedItem?.Id ?? -1;
             if (id >= 1) _cartService.Delete(SelectedItem.Id);
-            NotifyPropertyChanged("Inventory");
+            NotifyPropertyChanged("Cart");
         }
 
         public void Load()
