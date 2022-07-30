@@ -35,7 +35,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
                         Where(i => i.Name.ToLower().Contains(Query.ToLower())
                         || i.Description.ToLower().Contains(Query.ToLower())));
                 }
-                return new ObservableCollection<ItemViewModel>(_inventoryService.Inventory.Select(i => new ItemViewModel(i)));
+                // return new ObservableCollection<ItemViewModel>(_inventoryService.Inventory.Select(i => new ItemViewModel(i)));
             }
         }
 

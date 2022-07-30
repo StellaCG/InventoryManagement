@@ -85,6 +85,12 @@ namespace Library.InventoryManagement.Services
             
         }
 
+        public void Refresh()
+        {
+            var inventoryJson = new WebRequestHandler().Get("http://localhost:5015/Item").Result;
+            inventoryList = JsonConvert.DeserializeObject<List<Item>>(inventoryJson);
+        }
+
         public void Delete(int index)
         {
             var response = new WebRequestHandler().Get($"http://localhost:5015/Product/Delete/{index}");
