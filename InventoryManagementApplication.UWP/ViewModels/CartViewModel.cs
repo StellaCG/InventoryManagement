@@ -79,7 +79,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
         {
             ContentDialog diag = new CartDialog(SelectedItem);
             await diag.ShowAsync();
-            NotifyPropertyChanged("Inventory");
+            NotifyPropertyChanged("Cart");
         }
 
         public async Task PaymentDiag()
@@ -96,7 +96,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
                 // replace SelectedProduct with SelectedItem.BoundProduct or SelectedItem.BoundProductByWeight
                 var diag = new CartDialog(SelectedItem);
                 await diag.ShowAsync();
-                NotifyPropertyChanged("Inventory");
+                NotifyPropertyChanged("Cart");
             }
         }
 
@@ -111,7 +111,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
         {
             _cartService.currentCartName = SelectedCart.DisplayName;
             _cartService.Load(SelectedCart.DisplayName);
-            NotifyPropertyChanged("Inventory");
+            NotifyPropertyChanged("Cart");
         }
 
         public async Task Add(ItemType iType)
@@ -134,7 +134,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
                 throw new NotImplementedException();
             }
             await diag.ShowAsync();
-            NotifyPropertyChanged("Inventory");
+            NotifyPropertyChanged("Cart");
         }
 
         public void Checkout()
