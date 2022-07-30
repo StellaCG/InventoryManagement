@@ -26,6 +26,11 @@ namespace InventoryManagementApplication.UWP.Dialogs
             this.InitializeComponent();
             this.DataContext = new CartViewModel();
         }
+        public PaymentDialog(CartViewModel currentViewModel)
+        {
+            this.InitializeComponent();
+            this.DataContext = currentViewModel;
+        }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {

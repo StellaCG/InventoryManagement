@@ -22,8 +22,9 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0">Your total:</TextBlock>
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=CheckoutPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">$</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding Path=CheckoutPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Enter payment ID:"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=PaymentID, Mode=TwoWay}"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=PaymentID, Mode=TwoWay}"/>
     </Grid>
 </ContentDialog>

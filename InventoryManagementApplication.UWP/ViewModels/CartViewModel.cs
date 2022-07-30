@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace InventoryManagementApplication.UWP.ViewModels
@@ -84,7 +85,7 @@ namespace InventoryManagementApplication.UWP.ViewModels
 
         public async Task PaymentDiag()
         {
-            ContentDialog diag = new PaymentDialog();
+            ContentDialog diag = new PaymentDialog(this);
             await diag.ShowAsync();
             NotifyPropertyChanged("Cart");
         }
@@ -144,16 +145,11 @@ namespace InventoryManagementApplication.UWP.ViewModels
 
         public void CheckoutAndExit()
         {
-            var _tmpInventory = InventoryService.Current.Inventory;
-            for (int i = 0; i < _cartService.Cart.Count; i++)
+            while (_cartService.Cart.Any())
             {
-                if (_tmpInventory.Contains(_cartService.Cart[i]))
-                {
-                    InventoryService.Current.Delete(_tmpInventory.FindIndex(p => p == _cartService.Cart[i]));
-                    _cartService.Cart.RemoveAt(i);
-                }
+                _cartService.DeletePermanently(_cartService.Cart.First().Id);
             }
-            
+            Application.Current.Exit();
         }
 
         public enum ItemType

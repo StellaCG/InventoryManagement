@@ -86,5 +86,19 @@ namespace InventoryManagement.API.Controllers
             }
             return id;
         }
+
+        [HttpGet("DeletePermanently/{id}")]
+        public int DeletePermanently(int id)
+        {
+            var itemToDelete = FakeCart.CartItems.FirstOrDefault(i => i.Id == id);
+            if (itemToDelete != null)
+            {
+                var prod = itemToDelete as Product;
+                if (prod.Type == "Weight") FakeCart.CartProductsByWeight.Remove(prod as ProductByWeight);
+                else if (prod.Type == "Quantity") FakeCart.CartProducts.Remove(prod);
+                return id;
+            }
+            return id;
+        }
     }
 }

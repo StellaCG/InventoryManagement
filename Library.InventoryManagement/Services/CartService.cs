@@ -86,6 +86,14 @@ namespace Library.InventoryManagement.Services
             cartContents.Remove(productDelete);
         }
 
+        public void DeletePermanently(int index)
+        {
+            var response = new WebRequestHandler().Get($"http://localhost:5015/Cart/DeletePermanently/{index}");
+            var productDelete = cartContents.FirstOrDefault(p => p.Id == index);
+            if (productDelete != null) cartContents.Remove(productDelete);
+            else return;
+        }
+
         public static CartService Current
         {
             get
@@ -174,7 +182,7 @@ namespace Library.InventoryManagement.Services
             foreach (Product p in cartContents)
             {
                 // Console.WriteLine(p.GetType());
-                if (p.GetType() == typeof(ProductByWeight))
+                if (p.Type == "Weight")
                 {
                     checkoutPrice += ((p as ProductByWeight).Weight * p.Price);
                 }
